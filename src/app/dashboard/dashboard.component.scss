@@ -1,0 +1,49 @@
+.dashboard-grid {
+    display: flex;
+    gap: 16px;
+    width: 100%
+}
+
+.dashboard-grid mat-card {
+    padding: 16px;
+    width: 100%;
+}
+
+.reach {
+    display: flex;
+    gap: 16px;
+    width: 100%
+}
+
+.reach mat-card {
+    padding: 16px;
+    width: 100%;
+    margin: 15px 0;
+}
+
+.reach-col {
+    width: 30%
+}
+
+.col-grid {
+    width: 40%;
+}
+
+.accordion-card {
+    margin: 1rem 0;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.inner-card {
+    background-color: #fafafa;
+}
+
+mat-expansion-panel-header {
+    height: 170px;
+    padding: 10px
+}
+
+mat-expansion-panel-body {
+    padding: 0
+}
