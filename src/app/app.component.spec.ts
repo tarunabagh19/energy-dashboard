@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'media-dashboard'`, () => {
+  it(`should have as title 'energy-dashboard'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('media-dashboard');
+    expect(app.title).toEqual('energy-dashboard');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, media-dashboard');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, energy-dashboard');
   });
 });
