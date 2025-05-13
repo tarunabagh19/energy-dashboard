@@ -19,7 +19,7 @@ jobs:
       - name: Angular Deploy gh-pages Actions
         uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.3.1
         with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN  }} 
+          github_access_token: ${{ secrets.SSH_TOKEN  }} 
           build_configuration: production 
           base_href: /media-dashboard/  
           deploy_branch: gh-pages 
