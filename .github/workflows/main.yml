@@ -40,7 +40,7 @@ jobs:
             sudo mkdir -p /var/www/media-dashboard
             sudo chown $USER:$USER /var/www/media-dashboard
 
-      - name: Copy built files to EC2
+      - name: Copy built Angular app to EC2
         uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -49,11 +49,11 @@ jobs:
           source: "dist/media-dashboard/*"
           target: "/var/www/media-dashboard"
 
-      - name: Restart Node.js app using PM2
+      - name: Reload Nginx to reflect changes
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_TOKEN }}
           script: |
-            pm2 reload media-dashboard || pm2 start /var/www/media-dashboard/server.js --name media-dashboard
+            sudo systemctl reload nginx
