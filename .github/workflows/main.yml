@@ -38,6 +38,7 @@ jobs:
           key: ${{ secrets.SSH_TOKEN }}
           source: "dist/media-dashboard/*"
           target: "/var/www/media-dashboard"
+          debug: true
 
       - name: SSH into EC2 and restart service (optional)
         uses: appleboy/ssh-action@v1.0.0
