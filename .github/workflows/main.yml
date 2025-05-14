@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: /media-dashboard/
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Use Node.js
@@ -30,7 +30,17 @@ jobs:
       - name: Build application
         run: npm run build -- --configuration=production
 
-      - name: Copy files to EC2 via SSH
+      - name: Ensure target directory exists on EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_TOKEN }}
+          script: |
+            sudo mkdir -p /var/www/media-dashboard
+            sudo chown $USER:$USER /var/www/media-dashboard
+
+      - name: Copy files to EC2 via SCP
         uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -39,7 +49,7 @@ jobs:
           source: "dist/media-dashboard/*"
           target: "/var/www/media-dashboard"
 
-      - name: SSH into EC2 and restart service (optional)
+      - name: Restart Nginx (or your service)
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -47,4 +57,3 @@ jobs:
           key: ${{ secrets.SSH_TOKEN }}
           script: |
             sudo systemctl restart nginx
-
