@@ -23,4 +23,3 @@ jobs:
           build_configuration: production 
           base_href: /media-dashboard/  
           deploy_branch: gh-pages 
-          angular_dist_build_folder: /dist/media-dashboard
