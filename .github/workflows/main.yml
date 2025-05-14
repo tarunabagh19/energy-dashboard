@@ -41,7 +41,7 @@ jobs:
             sudo chown $USER:$USER /var/www/media-dashboard
 
       - name: Copy built Angular app to EC2
-        uses: appleboy/scp-action@v0.1.3
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
