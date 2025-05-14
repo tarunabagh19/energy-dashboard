@@ -31,14 +31,13 @@ jobs:
         run: npm run build -- --configuration=production
 
       - name: Copy files to EC2 via SSH
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_TOKEN }}
           source: "dist/media-dashboard/*"
           target: "/var/www/media-dashboard"
-          debug: true
 
       - name: SSH into EC2 and restart service (optional)
         uses: appleboy/ssh-action@v1.0.0
