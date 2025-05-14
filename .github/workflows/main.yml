@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: /media-dashboard/
         uses: actions/checkout@v3
 
       - name: Use Node.js
