@@ -51,7 +51,9 @@ jobs:
           key: ${{ secrets.SSH_TOKEN }}
           source: "dist/media-dashboard/*"
           target: "/var/www/media-dashboard"
-
+          script: |
+            sudo chown $USER:$USER /dist/media-dashboard/*
+            
       - name: Reload Nginx to reflect changes
         uses: appleboy/ssh-action@v1.0.0
         with:
