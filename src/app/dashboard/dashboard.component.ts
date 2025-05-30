@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartType } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,239 +7,150 @@ import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  public selectedBrand = 'All';
-  brands = ['All', 'Disney', 'BBC', 'Netflix'];
-  likesDataByPlatform:any = {
-    Instagram: [320, 180, 400],
-    Twitter:   [210, 300, 250],
-    Facebook:  [150, 120, 170],
-    YouTube:   [500, 400, 450]
-  };
-  brandData: any = {
-    'Disney': {
-      pieChartData: {
-        labels: ['Originals', 'Licensed Content', 'Live TV'],
-        datasets: [
-          { data: [45, 35, 20], backgroundColor: ['#cc65fe', '#e03c3c', '#f67b7b'] }
-        ]
-      },
-      lineChartData: {
-        labels: ['May 8', 'May 9', 'May 10', 'May 11'],
-        datasets: [
-          { label: 'Disney+', data: [8.2, 8.4, 8.3, 8.1], borderColor: '#113ccf', fill: false }
-        ]
-      }
-    },
-    'BBC': {
-      pieChartData: {
-        labels: ['News', 'Drama', 'Documentary'],
-        datasets: [
-          { data: [40, 30, 30], backgroundColor: ['#ffce56', '#e03c3c', '#f67b7b'] }
-        ]
-      },
-      lineChartData: {
-        labels: ['May 8', 'May 9', 'May 10', 'May 11'],
-        datasets: [
-          { label: 'BBC iPlayer', data: [7.9, 8.0, 8.1, 8.2], borderColor: '#cc65fe', fill: false }
-        ]
-      }
-    },
-    'Netflix': {
-      pieChartData: {
-        labels: ['Originals', 'Movies', 'Series'],
-        datasets: [
-          { data: [50, 30, 20], backgroundColor: ['#ff6384', '#e03c3c', '#f67b7b'] }
-        ]
-      },
-      lineChartData: {
-        labels: ['May 8', 'May 9', 'May 10', 'May 11'],
-        datasets: [
-          { label: 'Netflix', data: [8.0, 8.1, 8.0, 8.3], borderColor: '#e50914', fill: false }
-        ]
-      }
-    }
-  };
 
-  pieChartData: any = null;
-  piechartOfLikes:any = null;
-  lineChartData: any = null;
+  selectedRegion: string = '';
+  regions: string[] = ['North', 'South', 'East', 'West'];
+
   pieChartType: ChartType = 'pie';
   lineChartType: ChartType = 'line';
+  radarChartType: ChartType = 'radar';
+  barChartType: ChartType = 'bar';
 
-  ngOnInit() {
+  pieChartData!: ChartConfiguration<'pie'>['data'];
+  lineChartData!: ChartConfiguration<'line'>['data'];
+  radarChartData!: ChartConfiguration<'radar'>['data'];
+  barChartData: any;
+  barChartLabels: string[] = [];
+  barChartOptions: any = { responsive: true };
+
+efficiencyData = [
+  { region: 'North America', Solar: 18, Wind: 35, Hydro: 45, Thermal: 33 },
+  { region: 'Europe',       Solar: 20, Wind: 40, Hydro: 50, Thermal: 30 },
+  { region: 'Asia',         Solar: 15, Wind: 30, Hydro: 55, Thermal: 38 },
+  { region: 'South America',Solar: 17, Wind: 25, Hydro: 60, Thermal: 28 },
+  { region: 'Africa',       Solar: 16, Wind: 22, Hydro: 48, Thermal: 25 },
+  { region: 'Australia',    Solar: 21, Wind: 37, Hydro: 52, Thermal: 31 }
+];  
+
+  regionCardData: any[] = [];
+  chartConfigs: any[] = [];
+  platforms: string[] = ['Solar', 'Wind', 'Hydro', 'Thermal'];
+
+  displayedColumns: string[] = ['region', 'Solar', 'Wind', 'Hydro', 'Thermal'];
+  engagementData = [
+    { region: 'North', Solar: 72, Wind: 68, Hydro: 60, Thermal: 55 },
+    { region: 'South', Solar: 65, Wind: 70, Hydro: 58, Thermal: 60 },
+    { region: 'East', Solar: 60, Wind: 63, Hydro: 70, Thermal: 50 },
+    { region: 'West', Solar: 68, Wind: 75, Hydro: 66, Thermal: 58 }
+  ];
+
+  ngOnInit(): void {
+    this.selectedRegion = this.regions[0];
+    this.onRegionChange();
+  }
+
+  onRegionChange(): void {
     this.pieChartData = {
-      labels: ['Disney Originals', 'BBC News', 'Netflix Originals'],
-      datasets: [
-        { data: [45, 40, 50], backgroundColor: ['#36A2EB', '#2fd280', '#f0a6ee'] }
-      ]
+      labels: ['Solar', 'Wind', 'Hydro', 'Thermal'],
+      datasets: [{
+        data: [30, 25, 20, 25],
+        backgroundColor: ['#fbc02d', '#4caf50', '#0288d1', '#ff7043']
+      }]
     };
+
     this.lineChartData = {
-      labels: ['May 8', 'May 9', 'May 10', 'May 11'],
-      datasets: [
-        { label: 'Disney+', data: [8.2, 8.4, 8.3, 8.1], borderColor: '#113ccf', fill: false },
-        { label: 'BBC iPlayer', data: [7.9, 8.0, 8.1, 8.2], borderColor: '#36a2eb', fill: false },
-        { label: 'Netflix', data: [8.0, 8.1, 8.0, 8.3], borderColor: '#e50914', fill: false }
-      ]
-    };
-
-
-    
-  }
-  onBrandChange() {
-    if (this.selectedBrand === 'All') {
-      this.pieChartData = {
-        labels: ['Disney Originals', 'BBC News', 'Netflix Originals'],
-        datasets: [
-          { data: [45, 40, 50], backgroundColor: ['#36A2EB', '#2fd280', '#f0a6ee'] }
-        ]
-      };
-      this.lineChartData = {
-        labels: ['May 8', 'May 9', 'May 10', 'May 11'],
-        datasets: [
-          { label: 'Disney+', data: [8.2, 8.4, 8.3, 8.1], borderColor: '#113ccf', fill: false },
-          { label: 'BBC iPlayer', data: [7.9, 8.0, 8.1, 8.2], borderColor: '#cc65fe', fill: false },
-          { label: 'Netflix', data: [8.0, 8.1, 8.0, 8.3], borderColor: '#e50914', fill: false }
-        ]
-      };
-    } else {
-      this.pieChartData = this.brandData[this.selectedBrand].pieChartData;
-      this.lineChartData = this.brandData[this.selectedBrand].lineChartData;
-    }
-  }
-
-
-  platforms = ['Instagram', 'Twitter', 'Facebook', 'YouTube'];
-  
-
-  // Construct chart datasets dynamically
-  getChartData() {
-    return this.platforms.map(platform => ({
-      labels: this.brands,
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
       datasets: [
         {
-          label: `${platform} Likes`,
-          data: this.likesDataByPlatform[platform],
-          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+          label: 'Energy Output (MW)',
+          data: [120, 135, 150, 140, 160],
+          borderColor: '#42a5f5',
+          fill: false
         }
       ]
-    }));
-  }
-  barChartData = this.platforms.map((platform, index) => ({
-    label: platform,
-    data: this.likesDataByPlatform[platform],
-    backgroundColor: this.getColor(index),
-    stack: 'likesStack'
-  }));
+    };
 
-  barChartLabels = this.brands;
-  barChartType: ChartType = 'bar';
-  barChartOptions: ChartOptions = {
-    responsive: true,
-    plugins: {
-      title: {
-        display: true,
-        text: 'Overall Likes by Brand and Platform'
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: false
-      },
-      legend: {
-        position: 'top'
+    this.radarChartData = {
+      labels: ['Solar', 'Wind', 'Hydro', 'Thermal'],
+      datasets: [
+        {
+          label: 'Efficiency (%)',
+          data: [85, 78, 75, 60],
+          backgroundColor: 'rgba(77, 182, 172, 0.2)',
+          borderColor: '#4db6ac'
+        }
+      ]
+    };
+
+    this.barChartData = [
+      {
+        label: 'Energy Produced (GWh)',
+        data: [400, 350, 300, 280],
+        backgroundColor: ['#fbc02d', '#4caf50', '#0288d1', '#ff7043']
       }
-    },
-    scales: {
-      x: {
-        stacked: true
-      },
-      y: {
-        stacked: true
-      }
-    }
-  };
+    ];
 
-  getColor(index: number): string {
-    const colors = ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'];
-    return colors[index % colors.length];
+    this.barChartLabels = ['Solar', 'Wind', 'Hydro', 'Thermal'];
+
+    this.regionCardData = [
+  {
+    region: 'North',
+    totalOutput: 1200,
+    topSource: { source: 'Solar', output: 500 },
+    sourceBreakdown: [
+      { source: 'Solar', output: 500, capacity: 700, efficiencyRate: 71 },
+      { source: 'Wind', output: 300, capacity: 480, efficiencyRate: 63 },
+      { source: 'Hydro', output: 250, capacity: 430, efficiencyRate: 58 },
+      { source: 'Thermal', output: 150, capacity: 400, efficiencyRate: 38 }
+    ]
+  },
+  {
+    region: 'South',
+    totalOutput: 1100,
+    topSource: { source: 'Wind', output: 400 },
+    sourceBreakdown: [
+      { source: 'Solar', output: 300, capacity: 500, efficiencyRate: 60 },
+      { source: 'Wind', output: 400, capacity: 580, efficiencyRate: 69 },
+      { source: 'Hydro', output: 250, capacity: 460, efficiencyRate: 54 },
+      { source: 'Thermal', output: 150, capacity: 420, efficiencyRate: 36 }
+    ]
+  },
+  {
+    region: 'East',
+    totalOutput: 1250,
+    topSource: { source: 'Hydro', output: 450 },
+    sourceBreakdown: [
+      { source: 'Solar', output: 280, capacity: 460, efficiencyRate: 61 },
+      { source: 'Wind', output: 320, capacity: 500, efficiencyRate: 64 },
+      { source: 'Hydro', output: 450, capacity: 620, efficiencyRate: 73 },
+      { source: 'Thermal', output: 200, capacity: 450, efficiencyRate: 44 }
+    ]
+  },
+  {
+    region: 'West',
+    totalOutput: 1300,
+    topSource: { source: 'Wind', output: 500 },
+    sourceBreakdown: [
+      { source: 'Solar', output: 350, capacity: 550, efficiencyRate: 64 },
+      { source: 'Wind', output: 500, capacity: 640, efficiencyRate: 78 },
+      { source: 'Hydro', output: 300, capacity: 480, efficiencyRate: 62 },
+      { source: 'Thermal', output: 150, capacity: 410, efficiencyRate: 37 }
+    ]
   }
-  chartConfigs = this.getChartData();
+];
 
 
-  brandsCard = ['Disney', 'BBC', 'Netflix'];
-
-  reachDataByPlatform:any = {
-    Instagram: [1000, 800, 1200],
-    Twitter:   [900, 1100, 1000],
-    Facebook:  [700, 600, 750],
-    YouTube:   [2000, 1800, 2100]
-  };
-
-  getBrandLikeData() {
-    return this.brandsCard.map((brand, i) => {
-      const platformBreakdown = this.platforms.map(platform => {
-        const likes = this.likesDataByPlatform[platform][i];
-        const reach = this.reachDataByPlatform[platform][i];
-        const engagementRate = reach > 0 ? (likes / reach) * 100 : 0;
-        return {
-          platform,
-          likes,
-          reach,
-          engagementRate: +engagementRate.toFixed(1)
-        };
-      });
-
-      const totalLikes = platformBreakdown.reduce((sum, p) => sum + p.likes, 0);
-      const topPlatform = platformBreakdown.reduce((max, p) => p.likes > max.likes ? p : max, platformBreakdown[0]);
-
+    this.chartConfigs = this.platforms.map(source => {
       return {
-        brand,
-        totalLikes,
-        platformBreakdown,
-        topPlatform
+        labels: ['North', 'South', 'East', 'West'],
+        datasets: [
+          {
+            label: source + ' Output (GWh)',
+            data: [300, 280, 250, 260],
+            backgroundColor: '#90caf9'
+          }
+        ]
       };
     });
   }
-
-  brandCardData = this.getBrandLikeData();
-
-  public radarChartLabels: string[] = ['Instagram', 'Twitter', 'Facebook', 'YouTube'];
-
-public radarChartData = {
-  labels: this.radarChartLabels,
-  datasets: [
-    {
-      label: 'Disney',
-      data: [32, 23.3, 21.4, 25.0],
-      fill: true,
-      backgroundColor: 'rgba(255,99,132,0.2)',
-      borderColor: 'rgba(255,99,132,1)',
-    },
-    {
-      label: 'BBC',
-      data: [22.5, 27.3, 20.0, 22.2],
-      fill: true,
-      backgroundColor: 'rgba(54,162,235,0.2)',
-      borderColor: 'rgba(54,162,235,1)',
-    },
-    {
-      label: 'Netflix',
-      data: [33.3, 25.0, 22.7, 21.4],
-      fill: true,
-      backgroundColor: 'rgba(255,206,86,0.2)',
-      borderColor: 'rgba(255,206,86,1)',
-    }
-  ]
-};
-
-public radarChartType: ChartType = 'radar';
-
-
-engagementData = [
-  { brand: 'Disney',  Instagram: 32.0, Twitter: 23.3, Facebook: 21.4, YouTube: 25.0 },
-  { brand: 'BBC',     Instagram: 22.5, Twitter: 27.3, Facebook: 20.0, YouTube: 22.2 },
-  { brand: 'Netflix', Instagram: 33.3, Twitter: 25.0, Facebook: 22.7, YouTube: 21.4 }
-];
-
-displayedColumns: string[] = ['brand', 'Instagram', 'Twitter', 'Facebook', 'YouTube'];
-
 }

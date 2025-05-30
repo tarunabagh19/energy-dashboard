@@ -1,49 +1,95 @@
+mat-toolbar {
+  background: linear-gradient(to right, #2c3e50, #3498db);
+  color: #fff;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+mat-form-field {
+  width: 250px;
+  margin-bottom: 20px;
+}
+
 .dashboard-grid {
-    display: flex;
-    gap: 16px;
-    width: 100%
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 20px;
+  margin-top: 10px;
+}
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
 }
 
-.dashboard-grid mat-card {
-    padding: 16px;
-    width: 100%;
+.grid-item {
+  flex: 1 1 calc(25% - 16px); /* 4 items per row */
+  min-width: 250px;
+  max-width: 100%;
+}
+mat-card {
+  background-color: #f5f8fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
 }
 
-.reach {
-    display: flex;
-    gap: 16px;
-    width: 100%
-}
-
-.reach mat-card {
-    padding: 16px;
-    width: 100%;
-    margin: 15px 0;
-}
-
-.reach-col {
-    width: 30%
-}
-
-.col-grid {
-    width: 40%;
-}
-
-.accordion-card {
-    margin: 1rem 0;
-    border-radius: 8px;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+mat-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 12px;
 }
 
 .inner-card {
-    background-color: #fafafa;
+  background-color: #e8f5e9;
+  border: 1px solid #a5d6a7;
 }
 
-mat-expansion-panel-header {
-    height: 170px;
-    padding: 10px
+.accordion-card {
+  background-color: #ffffff;
+  border-left: 4px solid #4caf50;
+  margin-bottom: 8px;
 }
 
-mat-expansion-panel-body {
-    padding: 0
+.col-grid {
+  margin-top: 20px;
+}
+
+.reach {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 15px;
+  margin-top: 25px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+
+  th {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    font-weight: 600;
+  }
+
+  td, th {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #37474f;
+  margin: 0;
+}
+::ng-deep .mat-expansion-panel {
+  width: 100%;
+}
+.col-grid {
+  margin: 16px;
 }

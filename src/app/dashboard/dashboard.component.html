@@ -1,115 +1,109 @@
 <mat-toolbar color="primary">
-    <span>Media Dashboard</span>
+  <span>Energy Dashboard</span>
 </mat-toolbar>
 
 <div style="padding: 5px;">
-    <mat-form-field appearance="fill">
-        <mat-label>Select Brand</mat-label>
-        <mat-select [(ngModel)]="selectedBrand" (selectionChange)="onBrandChange()">
-            <mat-option *ngFor="let brand of brands" [value]="brand">{{ brand }}</mat-option>
-        </mat-select>
-    </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Select Region</mat-label>
+    <mat-select [(ngModel)]="selectedRegion" (selectionChange)="onRegionChange()">
+      <mat-option *ngFor="let region of regions" [value]="region">{{ region }}</mat-option>
+    </mat-select>
+  </mat-form-field>
 
-    <div class="dashboard-grid" *ngIf="pieChartData && lineChartData">
-        <mat-card>
-            <mat-card-title>{{ selectedBrand }} Content Distribution</mat-card-title>
-            <canvas baseChart [data]="pieChartData" [type]="pieChartType" style="max-height: 350px;">
-            </canvas>
+  <div class="dashboard-grid" *ngIf="pieChartData && lineChartData">
+    <mat-card>
+      <mat-card-title>{{ selectedRegion }} Energy Source Mix</mat-card-title>
+      <canvas baseChart [data]="pieChartData" [type]="pieChartType" style="max-height: 350px;"></canvas>
 
-            <mat-card-title>{{ selectedBrand }} Ratings Over Time</mat-card-title>
-            <canvas baseChart [data]="lineChartData" [type]="lineChartType">
-            </canvas>
-        </mat-card>
+      <mat-card-title>{{ selectedRegion }} Grid Load Over Time</mat-card-title>
+      <canvas baseChart [data]="lineChartData" [type]="lineChartType"></canvas>
+    </mat-card>
 
-        <mat-card>
-            <mat-card-title>Engagement Rate Comparison (Radar Chart)</mat-card-title>
-            <canvas baseChart [data]="radarChartData" [type]="radarChartType" style="max-height: 350px;"
-                [options]="{ responsive: true, plugins: { legend: { position: 'top' } } }">
-            </canvas>
-            <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-                [type]="barChartType">
-            </canvas>
-        </mat-card>
+    <mat-card>
+      <mat-card-title>Source Efficiency Comparison (Radar Chart)</mat-card-title>
+      <canvas baseChart [data]="radarChartData" [type]="radarChartType" style="max-height: 350px;"
+        [options]="{ responsive: true, plugins: { legend: { position: 'top' } } }"></canvas>
 
-        <div fxLayout="column" class="col-grid">
-            <mat-accordion multi>
-                <mat-expansion-panel *ngFor="let brand of brandCardData" class="accordion-card">
-                    <mat-expansion-panel-header>
-                        <mat-panel-title>
-                            {{ brand.brand }}
-                        </mat-panel-title>
-                        <mat-panel-description>
-                            Total Likes: {{ brand.totalLikes }} | 🏆 Top Platform: {{ brand.topPlatform.platform }}
-                        </mat-panel-description>
-                    </mat-expansion-panel-header>
+      <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
+        [type]="barChartType"></canvas>
+    </mat-card>
 
-                    <mat-card class="inner-card">
-                        <mat-card-title>Platform Breakdown</mat-card-title>
-                        <mat-card-content>
-                            <ul style="list-style: none; padding-left: 0;">
-                                <li *ngFor="let p of brand.platformBreakdown">
-                                    <strong>{{ p.platform }}:</strong><br>
-                                    Likes: {{ p.likes }}, Reach: {{ p.reach }}, Engagement: {{ p.engagementRate }}%
-                                </li>
-                            </ul>
-                        </mat-card-content>
-                    </mat-card>
-                </mat-expansion-panel>
-            </mat-accordion>
-        </div>
+  </div>
+<div class="grid-container" style="margin-top: 10px;">
+  <div *ngFor="let region of regionCardData" class="grid-item">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ region.region }}
+        </mat-panel-title>
+        <mat-panel-description>
+          Total Generation: {{ region.totalGeneration }} MWh | 🔋 {{ region.topSource.source }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-card>
+        <mat-card-title>Source Breakdown</mat-card-title>
+        <mat-card-content>
+          <ul style="list-style: none; padding-left: 0;">
+            <li *ngFor="let s of region.sourceBreakdown">
+              <strong>{{ s.source }}:</strong><br>
+              Output: {{ s.output }} MWh<br>
+              Capacity: {{ s.capacity }} MW<br>
+              Efficiency: {{ s.efficiencyRate }}%
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
+    </mat-expansion-panel>
+  </div>
+</div>
+  <div class="reach">
+    <div fxLayout="column" *ngFor="let config of chartConfigs; let i = index">
+      <mat-card>
+        <canvas baseChart [datasets]="config.datasets" [labels]="config.labels" [type]="'bar'"></canvas>
+      </mat-card>
+      <mat-card style="min-height: 110px;">
+        <h3>{{ platforms[i] }} Output by Region</h3>
+      </mat-card>
     </div>
 
-    <div class="reach">
+    <div fxLayout="column">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Efficiency Rates by Source</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <table mat-table [dataSource]="efficiencyData" style="width: 80%;">
+            <ng-container matColumnDef="region">
+              <th mat-header-cell *matHeaderCellDef> Region </th>
+              <td mat-cell *matCellDef="let element"> {{element.region}} </td>
+            </ng-container>
 
-        <div fxLayout="column" *ngFor="let config of chartConfigs; let i = index">
-            <mat-card>
+            <ng-container matColumnDef="Solar">
+              <th mat-header-cell *matHeaderCellDef> Solar </th>
+              <td mat-cell *matCellDef="let element"> {{element.Solar}}% </td>
+            </ng-container>
 
-                <canvas baseChart [datasets]="config.datasets" [labels]="config.labels" [type]="'bar'">
-                </canvas>
-            </mat-card>
-            <mat-card style="min-height: 110px;">
-                <h3>{{ platforms[i] }} Likes by Brand</h3>
-            </mat-card>
-        </div>
-        <div fxLayout="column">
-            <mat-card>
-                <mat-card-header>
-                    <mat-card-title>Engagement Rates by Platform</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <table mat-table [dataSource]="engagementData" style="width: 80%;">
+            <ng-container matColumnDef="Wind">
+              <th mat-header-cell *matHeaderCellDef> Wind </th>
+              <td mat-cell *matCellDef="let element"> {{element.Wind}}% </td>
+            </ng-container>
 
-                        <ng-container matColumnDef="brand">
-                            <th mat-header-cell *matHeaderCellDef> Brand </th>
-                            <td mat-cell *matCellDef="let element"> {{element.brand}} </td>
-                        </ng-container>
+            <ng-container matColumnDef="Hydro">
+              <th mat-header-cell *matHeaderCellDef> Hydro </th>
+              <td mat-cell *matCellDef="let element"> {{element.Hydro}}% </td>
+            </ng-container>
 
-                        <ng-container matColumnDef="Instagram">
-                            <th mat-header-cell *matHeaderCellDef> Instagram </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Instagram}}% </td>
-                        </ng-container>
+            <ng-container matColumnDef="Thermal">
+              <th mat-header-cell *matHeaderCellDef> Thermal </th>
+              <td mat-cell *matCellDef="let element"> {{element.Thermal}}% </td>
+            </ng-container>
 
-                        <ng-container matColumnDef="Twitter">
-                            <th mat-header-cell *matHeaderCellDef> Twitter </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Twitter}}% </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="Facebook">
-                            <th mat-header-cell *matHeaderCellDef> Facebook </th>
-                            <td mat-cell *matCellDef="let element"> {{element.Facebook}}% </td>
-                        </ng-container>
-
-                        <ng-container matColumnDef="YouTube">
-                            <th mat-header-cell *matHeaderCellDef> YouTube </th>
-                            <td mat-cell *matCellDef="let element"> {{element.YouTube}}% </td>
-                        </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
-                </mat-card-content>
-            </mat-card>
-        </div>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
     </div>
-
+  </div>
 </div>
