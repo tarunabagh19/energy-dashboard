@@ -42,6 +42,7 @@ jobs:
           script: |
             sudo mkdir -p /var/www/media-dashboard
             sudo chown $USER:$USER /var/www/media-dashboard
+            sudo chown dist/media-dashboard
 
       - name: Copy built Angular app to EC2
         uses: appleboy/scp-action@v0.1.7
