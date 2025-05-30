@@ -43,6 +43,9 @@ jobs:
             sudo mkdir -p /var/www/media-dashboard
             sudo chown $USER:$USER /var/www/media-dashboard
 
+            script: |
+            sudo chown $USER:$USER /dist/media-dashboard/*
+            
       - name: Copy built Angular app to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -51,8 +54,6 @@ jobs:
           key: ${{ secrets.SSH_TOKEN }}
           source: "dist/media-dashboard/*"
           target: "/var/www/media-dashboard"
-          script: |
-            sudo chown $USER:$USER /dist/media-dashboard/*
             
       - name: Reload Nginx to reflect changes
         uses: appleboy/ssh-action@v1.0.0
