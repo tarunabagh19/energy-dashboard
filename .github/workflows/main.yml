@@ -40,8 +40,8 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_TOKEN }}
           script: |
-            sudo mkdir -p /var/www/media-dashboard
-            sudo chown $USER:$USER /var/www/media-dashboard
+            sudo mkdir -p /var/www/energy-dashboard
+            sudo chown $USER:$USER /var/www/energy-dashboard
 
       - name: Copy built Angular app to EC2
         uses: appleboy/scp-action@v0.1.7
@@ -49,8 +49,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_TOKEN }}
-          source: "dist/media-dashboard/*"
-          target: "/var/www/media-dashboard"
+          source: "dist/energy-dashboard/*"
+          target: "/var/www/energy-dashboard"
 
       - name: Reload Nginx to reflect changes
         uses: appleboy/ssh-action@v1.0.0
